@@ -28,6 +28,11 @@ describe('declaration', () => {
         const endpointV1 = ENDPOINT()
             .use((_ctx, next) => { str += '2'; return next(); })
             .useBeforeAll((_ctx, next) => { str += '1'; return next(); })
+            .useMiddlewaresMap({
+                bar: async (ctx, next) => {
+                    return next();
+                },
+            } as any)
             .useFunctionsMap({ foo: async data => {
                 str += '_';
                 return data + 1;
