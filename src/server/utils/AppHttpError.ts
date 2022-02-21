@@ -39,6 +39,10 @@ namespace AppHttpError {
         return new functions.https.HttpsError('invalid-argument', message);
     }
 
+    export function Unknown(message?: string) {
+        return new functions.https.HttpsError('unknown', message || DefaultStrings.unknown);
+    }
+
     export function NotAuthenticated(message?: string) {
         return new functions.https.HttpsError('unauthenticated', message || DefaultStrings.unauthenticated);
     }
