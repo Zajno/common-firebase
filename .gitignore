@@ -8,4 +8,6 @@ coverage/
 
 .env
 yarn-error.log
-.yalc
+
+.yalc/
+yalc.lock

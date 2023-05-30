@@ -1,7 +1,7 @@
 import * as Example from '../../examples/compositeFunctionExample';
 import { EndpointTestContext, getNestedFunction, wrapEndpoint } from './config';
 import AppHttpError from '../../server/utils/AppHttpError';
-
+import { jest } from '@jest/globals';
 
 describe('Function API', () => {
     const Endpoint = wrapEndpoint(Example.Server.ApiRoot.ExampleV1);
@@ -72,7 +72,7 @@ describe('Function API', () => {
     ).resolves.toEqual('lol_m0_m1_m2'));
 
     it('contains correct context', async () => {
-        const endpointDataHandler = jest.fn().mockImplementation();
+        const endpointDataHandler = jest.fn().mockImplementation(() => { /* no-op */ });
 
         const endpointCopy = Example.Server.ApiRoot.ExampleV1.clone();
         endpointCopy.handlers

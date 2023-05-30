@@ -1,5 +1,20 @@
+import { createLazy } from '@zajno/common/lazy/light';
 import logger from '@zajno/common/logger';
-import { StorageContext } from './firebase';
+import { AppConfig } from '../config';
+import Admin from './admin';
+
+
+const storage = Admin.storage();
+const StorageBucket = createLazy(() => {
+    const bucketName = AppConfig.value?.storageBucket || storage.bucket().name;
+    const bucket: ReturnType<typeof storage.bucket> = storage.bucket(bucketName);
+    return bucket;
+});
+
+export const StorageContext = {
+    get storage() { return storage; },
+    get bucket() { return StorageBucket.value; },
+};
 
 export async function removeDirectoryFromStorage(path: string): Promise<void> {
     if (!path) {

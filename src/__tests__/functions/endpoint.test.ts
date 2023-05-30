@@ -4,6 +4,7 @@ import AppHttpError from '../../server/utils/AppHttpError';
 import { getNestedFunction, wrapEndpoint } from './config';
 import { setTimeoutAsync } from '@zajno/common/async/timeout';
 import { AuthValidator } from '../../server/functions/middleware';
+import { jest } from '@jest/globals';
 
 namespace TestApi {
     const api1 = {
@@ -11,6 +12,8 @@ namespace TestApi {
     };
     export const Api = createCompositionExport(new FunctionComposite(api1, 'broken'));
 }
+
+type TestContext = EndpointContext<{ contextParam: 'TEST' | string }>;
 
 describe('declaration', () => {
     const ENDPOINT = () => new FunctionCompositeFactory(TestApi.Api());
@@ -138,20 +141,20 @@ describe('broken api', () => {
         it('validates context', async () => {
 
             const authValidator = jest.fn(AuthValidator);
-            const contextPopulist: (ctx: EndpointContext<{ contextParam: 'TEST' }>) => Promise<void> = jest.fn(async ctx => {
+            const contextPopulist = jest.fn(async (ctx: TestContext) => {
                 ctx.data = {
                     ...ctx.data,
                     contextParam: 'TEST',
                 };
             });
-            const contextValidator = jest.fn((ctx, next) => {
+            const contextValidator = jest.fn((ctx: TestContext, next: () => any) => {
                 if (ctx.data?.contextParam !== 'TEST') {
                     throw new Error('invalid context');
                 }
                 return next();
             });
 
-            const fooMiddleware = jest.fn((ctx, next) => {
+            const fooMiddleware = jest.fn((ctx: TestContext, next: () => any) => {
                 if (ctx.data?.contextParam !== 'TEST') {
                     throw new Error('[foo] invalid context');
                 }
